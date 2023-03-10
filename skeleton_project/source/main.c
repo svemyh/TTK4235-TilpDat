@@ -35,21 +35,25 @@
 //int elevio_floorSensor(void);
 //int elevio_stopButton(void);
 //int elevio_obstruction(void);
-#define queue_size 100
+
+
+
+
+//#define queue_size 100
 
 //queue handling system
-List<List<string>> queue_list = new List<List<bool>>();
-queue_list.Add(new List<bool> {0,0,0}); //opp, ned, cab. cab beskriver utløser open doors dersom current list == current floor 
-queue_list.Add(new List<bool> {0,0,0});
-queue_list.Add(new List<bool> {0,0,0});
-queue_list.Add(new List<bool> {0,0,0});
+//List<List<string>> queue_list = new List<List<bool>>();
+//queue_list.Add(new List<bool> {0,0,0}); //opp, ned, cab. cab beskriver utløser open doors dersom current list == current floor 
+//queue_list.Add(new List<bool> {0,0,0});
+//queue_list.Add(new List<bool> {0,0,0});
+//queue_list.Add(new List<bool> {0,0,0});
 
 int main(){
     elevio_init();
-    elevio_floorIndicator(0);
-    elevio_stopLamp(0);
-    elevio_buttonLamp(0);
-    elevio_doorOpenLamp(0);
+//    elevio_floorIndicator(0);
+//    elevio_stopLamp(0);
+//    elevio_buttonLamp(0);
+//    elevio_doorOpenLamp(0);
 
     // queue handling system
     
@@ -79,8 +83,8 @@ int main(){
         }
 
         //STOP
-	obstructionStop();
-	stopButton();
+//	obstructionStop();
+//	stopButton();
     }
 
     sleep(3); // wait 3 sec
