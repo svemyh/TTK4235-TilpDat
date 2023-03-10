@@ -37,10 +37,21 @@
 //int elevio_obstruction(void);
 #define queue_size 100
 
-
+//queue handling system
+List<List<string>> queue_list = new List<List<bool>>();
+queue_list.Add(new List<bool> {0,0,0}); //opp, ned, cab. cab beskriver utløser open doors dersom current list == current floor 
+queue_list.Add(new List<bool> {0,0,0});
+queue_list.Add(new List<bool> {0,0,0});
+queue_list.Add(new List<bool> {0,0,0});
 
 int main(){
     elevio_init();
+    elevio_floorIndicator(0);
+    elevio_stopLamp(0);
+    elevio_buttonLamp(0);
+    elevio_doorOpenLamp(0);
+
+    // queue handling system
     
     printf("=== Example Program ===\n");
     printf("Press the stop button on the elevator panel to exit\n");
@@ -68,21 +79,8 @@ int main(){
         }
 
         //STOP
-        if(elevio_obstruction()){
-            elevio_stopLamp(1);
-        } else {
-            elevio_stopLamp(0);
-        }
-        
-        if(elevio_stopButton()){
-            elevio_motorDirection(DIRN_STOP);
-            elevio_stopLamp(1);
-            if(floor != -1){
-                elevio_doorOpenLamp(1);
-            }
-            break;
-        }
-        nanosleep(&(struct timespec){0, 20*1000*1000}, NULL);
+	obstructionStop();
+	stopButton();
     }
 
     sleep(3); // wait 3 sec
