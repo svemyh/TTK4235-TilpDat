@@ -69,9 +69,8 @@ void flow_control(void){
 }
 
 void helloWorld(void){
-	printf("sss");
+	printf("Hello there!\n");
 }
-
 
 
 void flashLights(void){

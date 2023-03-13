@@ -40,8 +40,6 @@
 //int elevio_obstruction(void);
 #define queue_size 100
 
-
-
 int main(){
     elevio_init();
     
@@ -49,9 +47,8 @@ int main(){
     printf("Press the stop button on the elevator panel to exit\n");
 
     elevio_motorDirection(DIRN_UP);
-    
-    
-    flow_control();
+
+    helloWorld();
 
     while(1){
         
