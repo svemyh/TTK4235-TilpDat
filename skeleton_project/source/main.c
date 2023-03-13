@@ -5,6 +5,9 @@
 #include <unistd.h>
 #include "driver/elevio.h"
 #include "driver/obstructionAndStop/obstructionAndStop.h"
+#include "driver/queue_handling/queue_handling.h"
+#include "driver/openDoors/openDoors.h"
+
 
 //#define N_FLOORS 4
 
@@ -37,132 +40,10 @@
 //int elevio_stopButton(void);
 //int elevio_obstruction(void);
 
-type queueMatrix [4][3] = {
-    {0,0,0}  // fourth floor
-    {0,0,0}  // third floor
-    {0,0,0}  // second floor
-    {0,0,0}  // first floor
-}
-
-void openDoors() {
-    elevio_doorOpenLamp(true); // må ha et tidspunkt der dette skrur seg av?
-    printf("Door has opened at floor %d\n", elevio_floorSensor());
-    while (elevio_obstruction()) { // stopper programmet mens obstruction = true og skrur på stop lamp
-
-        obstrucitonStop();
-    } 
-
-    while (elevio_stopButton()) {
-        elevio_stopButton();
-    }
-    sleep(3);
-    elevio_doorOpenLamp(false);
-
-}
-
-queueMatrix[elevio_floorSensor()-1][2] = 1; //endrer cab til 1 slik at heisen skjønner at den skal stoppe ved den cabben
-
-switch (elevio_callButton(int floor, 0)) { //bruker dette for å sjekke bevegelse ved floorknapp 
-    case 4:
-        
-        break;
-    case 3:
-
-        break;
-switch (floorButtonPressed()) { //bruker dette for å endre til hvilken liste i queueMatrix vi jobber med 
-    case 4:
-        queueMatrix[elevio_floorSensor()-1][]
-        break;
-    case 3:
-
-        break;
-    case 2:
-        {
-
-        }
-        break;
-    case 1:
-        {
- i
-        }
-        break;
-}
-
-    case 2:
-        {
-
-        }
-        break;
-    case 1:
-        {
-
-        }
-        break;
-}
-
-
-
-for (int i = 0; i < 4; i++) { //move this in while loop
-    
-    for (int j = 0; j < 3, j++) {
-
-        int sum;
-        sum += queueMatrix[i][3];
-        
-        if (sum == 0): //idle 
-                {
-                    elevio_motorDirection(DIRN_STOP);
-                    elevio_doorOpenLamp(true);
-                         
-                }
-        else if (elevio_stopButton())  // stop button initiated. Lets move this outside the for loop? Or have an interrupt
-                {
-                    stopButton();
-                }
-
-        else if (elevio_obstruction()) // obstruction 
-                {
-                    obstructionStop();
-                }
-
-        else if (BUTTON_HALL_UP && 0 < sum) // moving up
-                {
-                    while (floor_request (UDEFINERT) () != elevio_floorSensor()) { //dette er jo for når man trykker etasje?
-                        elevio_motorDirection(DIRN_UP);
-                    }
-                    openDoors();
-                }
-
-        else if (BUTTON_HALL_DOWN && 0 < sum) // moving down       
-                {
-                    while (elevio_floorIndicator != elevio_floorSensor) {
-                        elevio_motorDirection(DIRN_DOWN);
-                    }
-                    openDoors();
-                }
-
-        else {
-            printf("Out of Bounds\n");
-        }
-
-        }
-
-    }
-}
-
-
-typedef enum {
-    IDLE = 0,
-    STOPBUTTON = -2,
-    MOVING_UP = 1,
-    MOVING_DOWN =-1
-} elevatorState;
-
-elevio_callButton(f, b)
-
 int main(){
     // init 
     elevio_init();
+
     elevio_floorIndicator(0);
     elevio_stopLamp(0);
     elevio_doorOpenLamp(0);

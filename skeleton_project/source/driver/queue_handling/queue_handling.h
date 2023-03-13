@@ -8,7 +8,11 @@
 #include <stdio.h>
 #include <pthread.h>
 
-#include "../elevio.h"
-#include "../con_load.h"
+int queueMatrix[4][3] = {
+  {0,0,0},
+  {0,0,0},
+  {0,0,0}
+};
 
+void clearQueue(void);
 
