@@ -15,67 +15,66 @@
 
 #include "../elevio.h"
 #include "../con_load.h"
+#include "../openDoors/openDoors.h"
 
-int btnPressed = elevio_callButton(f, 0));
+int floor = elevio_floorSensor();
+
+int btnPressed = elevio_callButton(f, 2));
 switch(btnPressed) { //bruker dette for å sjekke bevegelse ved floorknapp 
     case 4:
-
-        queueMatrix[elevio_callButton(f, b)-1][2] = 1; 
+        queueMatrix[floor-1][2] = 1; 
         break;
     case 3:
-        queueMatrix[elevio_callButton(f, b)-1][2] = 1; 
+        queueMatrix[floor-1][2] = 1; 
     case 2:
-        queueMatrix[elevio_callButton(f, b)-1][2] = 1; 
+        queueMatrix[floor-1][2] = 1; 
         break;
     case 1:
-        queueMatrix[elevio_callButton(f, b)-1][2] = 1; 
+        queueMatrix[floor-1][2] = 1; 
         break;
 }
 
 
+for (int f = 0; f < N_FLOORS; f++) {
+    for (int b = 0; b < N_BUTTONS; b++) {
 
-void floorPressed(void) {
-    queueMatrix[elevio_callButton(f, b)-1][2] = 1; // sets a true to floor cab(a number to tell the elevator to stop)
+if (elevio_callButton(f, b)) {
+    queueMatrix[1][2] = 1; // sets a true to floor cab(a number to tell the elevator to stop)
     for (int i = 0; i < 4; i++) { //move this in while loop
-    
         for (int j = 0; j < 3, j++) {
     
             int sum;
             sum += queueMatrix[i][3];
         
-            if (sum == 0): //idle 
-                    {
-                        elevio_motorDirection(DIRN_STOP);
-                        elevio_doorOpenLamp(true);
-                         
-                    }
-            else if (elevio_stopButton())  // stop button initiated. Lets move this outside the for loop? Or have an interrupt
-                    {
-                        stopButton();
-                    }
+            if (sum == 0): { //idle
+                elevio_motorDirection(DIRN_STOP);
+                elevio_doorOpenLamp(1);      
+            }
+            else if (elevio_stopButton()) {  // stop button initiated. Lets move this outside the for loop? 
+                stopButton();
+            }
+            else if (elevio_obstruction()) { // obstruction 
+                obstructionStop();
+            }
 
-            else if (elevio_obstruction()) // obstruction 
-                    {
-                        obstructionStop();
-                    }
-
-            else if (BUTTON_HALL_UP && 0 < sum) { //moving up
+            else if (ButtonType BUTTON_HALL_UP && 0 < sum) { //moving up
                 while (elevio_callButton(f, b) != elevio_floorSensor()) { //dette er jo for når man trykker etasje?
                     elevio_motorDirection(DIRN_UP);
                     if (elevio_floorSensor() = elevio_callButton(f, b)) { //skrur av cab 
                         queueMatrix[elevio_floorSensor()-1][2] = 0;
+                        openDoors();
                         break;
                     }
                 }
                 openDoors();
             }
     
-            else if (BUTTON_HALL_DOWN && 0 < sum) // moving down       
-            {
-                while (elevio_callButton(f, b) != elevio_floorSensor) {
+            else if (ButtonType BUTTON_HALL_DOWN && 0 < sum) {// moving down
+                while ( elevio_floorSensor()) {
                     elevio_motorDirection(DIRN_DOWN);
                     if (elevio_floorSensor() = elevio_callButton(f, b)) { //skrur av cab 
                         queueMatrix[elevio_floorSensor()-1][2] = 0;
+                        openDoors();
                         break;
                     }
                 }
@@ -83,14 +82,12 @@ void floorPressed(void) {
             }
 
             else {
-                printf("Out of Bounds\n");
+                elevio_motorDirection(DIRN_STOP);
+                printf("Elevator is about to move out of Bounds\n");
             }
-
-            }
-    
-        }
+        } 
     }
-} 
+}
 
 void clearQueue(void) {
     elevio_doorOpenLamp(0);
