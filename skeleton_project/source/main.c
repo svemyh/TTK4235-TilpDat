@@ -4,6 +4,9 @@
 #include <time.h>
 #include <unistd.h>
 #include "driver/elevio.h"
+#include "driver/testing.h"
+#include "driver/functions.h"
+
 
 //#define N_FLOORS 4
 
@@ -46,8 +49,12 @@ int main(){
     printf("Press the stop button on the elevator panel to exit\n");
 
     elevio_motorDirection(DIRN_UP);
+    
+    
+    flow_control();
 
     while(1){
+        
         int floor = elevio_floorSensor();
         printf("floor: %d \n",floor);
 

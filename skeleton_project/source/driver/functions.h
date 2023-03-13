@@ -3,7 +3,7 @@
 #include <signal.h>
 #include <time.h>
 #include <unistd.h>
-#include "driver/elevio.h"
+#include "elevio.h"
 #include <stdbool.h>
 
 
@@ -125,9 +125,13 @@ bool thereIsAnUpwardgoingOrderFromFloorsAbove(int current_floor,  int g_floor_re
 void startup();
 
 void flow_control(void);
-void testlamps(void);
 
 
+void helloWorld(void);
+
+
+
+void flashLights(void);
 
 
 /// ref. STATE-DIAGRAM
