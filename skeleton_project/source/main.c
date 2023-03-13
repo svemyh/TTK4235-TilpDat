@@ -37,6 +37,9 @@
 //int elevio_stopButton(void);
 //int elevio_obstruction(void);
 
+//#define queue_size 100
+
+
 type queueMatrix [4][3] = {
     {0,0,0}  // fourth floor
     {0,0,0}  // third floor
@@ -191,6 +194,7 @@ int main(){
                 elevio_buttonLamp(f, b, btnPressed);
             }
         }
+
 
     }
     return 0;
