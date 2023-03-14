@@ -1,3 +1,8 @@
+/**
+ * @file
+ * @brief The main file for elevator
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
@@ -7,6 +12,7 @@
 #include "driver/obstructionAndStop/obstructionAndStop.h"
 #include "driver/queue_handling/queue_handling.h"
 #include "driver/openDoors/openDoors.h"
+#include "driver/elevatorState/elevatorState.h"
 
 
 //#define N_FLOORS 4
@@ -43,18 +49,19 @@
 int main(){
     // init 
     elevio_init();
+    elevatorState state = INIT;
 
     elevio_floorIndicator(0);
     elevio_stopLamp(0);
     elevio_doorOpenLamp(0);
     
-    printf("=== Example Program ===\n");
+    printf("=== Elevator Program ===\n");
     printf("Press the stop button on the elevator panel to exit\n");
 
 
     while(1){
-        int floor = elevio_floorSensor();
-        printf("floor: %d \n",floor);
+        int currentFloor = elevio_floorSensor();
+        printf("floor: %d \n",currentFloor);
 
         //if(floor == 0){
         //    elevio_motorDirection(DIRN_UP);
@@ -66,12 +73,15 @@ int main(){
         
 
 
-        for(int f = 0; f < N_FLOORS; f++){ //skrur floor lamps på og av?
+        for(int f = 0; f < N_FLOORS; f++){ //skrur floor lamps på og av avhengig av hvilken etasje heisen befinner seg i
             for(int b = 0; b < N_BUTTONS; b++){
                 int btnPressed = elevio_callButton(f, b);
                 elevio_buttonLamp(f, b, btnPressed);
             }
         }
+
+        currentState(currentFloor, &state);
+        sleep(3);
 
     }
     return 0;

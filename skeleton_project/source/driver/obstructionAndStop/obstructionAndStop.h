@@ -1,3 +1,7 @@
+/**
+ * @file
+ * @brief The library of obstruction and stop cases
+ */
 #pragma once
 
 #include <stdio.h>
@@ -7,5 +11,5 @@
 #include <unistd.h>
 #include "../../driver/elevio.h" 
 
-obstructionStop();
-stopButton();
+void obstructionStop();
+void stopButton(int currentFloor);

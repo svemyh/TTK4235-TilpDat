@@ -1,3 +1,8 @@
+/**
+ * @file
+ * @brief Library file for openDoors
+ */
 #pragma once 
+#include <time.h>
 
-void openDoors(void);
+void openDoors(int currentFloor);
