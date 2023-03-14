@@ -1,14 +1,11 @@
 /**
  * @file 
- * @brief elevatorState implementation file
+ * @brief The elevatorState implementation file
  */
 #include "elevatorState.h"
 #include "../obstructionAndStop/obstructionAndStop.h"
 #include "../openDoors/openDoors.h"
 #include "../queue_handling/queue_handling.h"
-
-extern MotorDirection currentDirection;
-extern int queueMatrix[N_FLOORS][N_BUTTONS];
 
 void currentState(int currentFloor, elevatorState *state) {
   switch (*state) {
@@ -25,8 +22,7 @@ void currentState(int currentFloor, elevatorState *state) {
       *state = IDLE;
       break; 
 
-    case IDLE:
-      currentDirection = DIRN_STOP;
+    case IDLE:     
       elevio_doorOpenLamp(1);
       if (elevio_stopButton()) {
         *state = BUTTONSTOP;

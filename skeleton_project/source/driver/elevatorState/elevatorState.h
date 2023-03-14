@@ -1,6 +1,6 @@
 /**
  * @file
- * @brief elevatorState
+ * @brief The elevatorState library
  */
 #pragma once
 #include "../elevio.h"
@@ -14,8 +14,6 @@ typedef enum {
 } elevatorState;
 
 elevatorState state;
-
-MotorDirection currentDirection;
 
 void currentState(int currentFloor, elevatorState *state);
 
