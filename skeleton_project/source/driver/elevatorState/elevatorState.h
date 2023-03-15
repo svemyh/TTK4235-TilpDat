@@ -13,8 +13,6 @@ typedef enum {
   BUTTONSTOP = 4,
 } elevatorState;
 
-elevatorState state;
-
 void currentState(int currentFloor, elevatorState *state);
 
 

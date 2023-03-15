@@ -11,12 +11,17 @@
 #include <netdb.h>
 #include <stdio.h>
 #include <pthread.h>
+#include <signal.h>
+#include <time.h>
+#include <unistd.h>
+#include <assert.h>
+#include <stdlib.h>
 
-int queueMatrix[4][3] = {
-  {0,0,0},
-  {0,0,0},
-  {0,0,0}
-};
+#include "../elevio.h"
+#include "../con_load.h"
+#include "../openDoors/openDoors.h"
+
+extern int queueMatrix[N_FLOORS][N_BUTTONS];
 
 int checkQueueAbove(int floor);
 int checkQueueBelow(int floor);

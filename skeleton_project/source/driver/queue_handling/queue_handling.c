@@ -3,27 +3,14 @@
  * @brief The implementation file for queue handling library
  */
 #include "queue_handling.h"
-// for å sjekke error
-#include <stdio.h>
-#include <stdlib.h>
-#include <signal.h>
-#include <time.h>
-#include <unistd.h>
-#include <assert.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netdb.h>
-#include <stdio.h>
-#include <pthread.h>
 
-#include "../elevio.h"
-#include "../con_load.h"
-#include "../openDoors/openDoors.h"
+int queueMatrix[N_FLOORS][N_BUTTONS] = {
+  {0}
+};
 
 int checkQueueAbove(int floor) { // check if should be moving up
     if (floor != -1) {
-        for (int f = 0; f < N_FLOORS; f++) {
+        for (int f = 0; f < N_FLOORS-1; f++) {
             if (queueMatrix[f][2] > 0) {
                 return 1; 
             }
@@ -34,7 +21,7 @@ int checkQueueAbove(int floor) { // check if should be moving up
 
 int checkQueueBelow(int floor) { // check if should be moving down
     if (floor != -1 && floor != 0) {
-        for (int f = 0; f < N_FLOORS; f--) {
+        for (int f = 0; f < N_FLOORS-1; f--) {
             if (queueMatrix[f][2] > 0) {
                 return 1; 
             }
@@ -63,8 +50,8 @@ void makeButtonRequest(int floor) { // as in UP or DOWN buttons. unused
 
 int checkQueue(void) { //unused
     int sum;
-    for (int f = 0; f < N_FLOORS; f++) {
-        for (int b = 0; b < N_BUTTONS; b++) {
+    for (int f = 0; f < N_FLOORS-1; f++) {
+        for (int b = 0; b < N_BUTTONS-1; b++) {
             
             sum = sum + queueMatrix[f][b];
             if (sum > 0) {
@@ -83,16 +70,16 @@ void clearQueue(void) {
             }
         }
 
-    for(int i = 0; i < 4; i++){
-        for (int j = 0; j < 3; j++) {
-            queueMatrix[i][j] = 0;
+    for(int f = 0; f < N_FLOORS-1; f++){
+        for (int b = 0; b < N_BUTTONS-1; b++) {
+            queueMatrix[f][b] = 0;
         }
     }
 }
 
 void clearFloor(int floor) {
     if (floor != -1) {
-        for (int b = 0; b < N_BUTTONS; b++) {
+        for (int b = 0; b < N_BUTTONS-1; b++) {
             queueMatrix[floor][b] = 0;
         }
     }

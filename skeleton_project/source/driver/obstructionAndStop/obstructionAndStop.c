@@ -5,10 +5,12 @@
 
 #include "obstructionAndStop.h"
 #include "../openDoors/openDoors.h"
+#include "../elevio.h"
 
 void obstructionStop(void) {
             if(elevio_obstruction()){
                 elevio_stopLamp(1);
+                printf("OBSTRUCTION DETECTED!\n");
             }
 
             else {
@@ -21,9 +23,11 @@ void stopButton(int currentFloor) {
                 elevio_motorDirection(DIRN_STOP);
                 elevio_stopLamp(1);
                 if(currentFloor != -1){
-                    elevio_doorOpenLamp(1);
+                        elevio_doorOpenLamp(1);
                 }
-                while(elevio_stopButton()) {};
+                while(elevio_stopButton()) {
+                        printf("STOP BUTTON HELD!\n");
+                };
                 elevio_stopLamp(0);
                 sleep(3);
         }

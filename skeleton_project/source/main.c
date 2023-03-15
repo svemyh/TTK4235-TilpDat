@@ -1,6 +1,6 @@
 /**
  * @file
- * @brief The main file for elevator
+ * @brief The main file for the elevator
  */
 
 #include <stdio.h>
@@ -8,6 +8,7 @@
 #include <signal.h>
 #include <time.h>
 #include <unistd.h>
+
 #include "driver/elevio.h"
 #include "driver/obstructionAndStop/obstructionAndStop.h"
 #include "driver/queue_handling/queue_handling.h"
@@ -50,18 +51,15 @@ int main(){
     // init 
     elevio_init();
     elevatorState state = INIT;
-
-    elevio_floorIndicator(0);
-    elevio_stopLamp(0);
-    elevio_doorOpenLamp(0);
     
     printf("=== Elevator Program ===\n");
     printf("Press the stop button on the elevator panel to exit\n");
 
 
     while(1){
+
         int currentFloor = elevio_floorSensor();
-        printf("floor: %d \n",currentFloor);
+        currentState(currentFloor, &state);
 
         //if(floor == 0){
         //    elevio_motorDirection(DIRN_UP);
@@ -80,8 +78,7 @@ int main(){
             }
         }
 
-        currentState(currentFloor, &state);
-        sleep(3);
+        //sleep(3);
 
     }
     return 0;
