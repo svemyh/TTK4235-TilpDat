@@ -55,11 +55,14 @@ void currentState(int currentFloor, elevatorState *state) {
 
     case IDLE: {
       if (currentFloor != -1) {
+        while (elevio_obstruction()) {
+          obstructionStop();
+        }
         elevio_doorOpenLamp(1);
         elevio_motorDirection(DIRN_STOP);
         printf("Idle in floor %d \n", currentFloor);
-        if (elevio_stopButton()) {
-          *state = BUTTONSTOP;
+        if (elevio_stopButton() || elevio_obstruction()) {
+          *state = STOP;
         }
         
         if (checkQueueAbove(currentFloor)) {
@@ -80,34 +83,37 @@ void currentState(int currentFloor, elevatorState *state) {
     }
 
     case MOVING_UP: {
-    elevio_motorDirection(DIRN_UP);
-    printf("Moving up. Currently in floor %d \n", currentFloor);
-      if (elevio_stopButton()) {
-        *state = BUTTONSTOP;
-      }
-      //if (currentFloor != -1) {
-        if ((currentFloor != -1 && queueMatrix[currentFloor][2] == 1 && queueMatrix[currentFloor][1] != 0) || currentFloor == 4) { // if arrived to requested floor. because we're the type of assholes that wont let passengers in if they request the opposite direction of the elevation direciton, we have them wait till request = direction
+        elevio_motorDirection(DIRN_UP);
+        printf("Moving up. Currently in floor %d \n", currentFloor);
+        if (elevio_stopButton()) {
+            *state = STOP;
+            break;
+        }
+        //if (currentFloor != -1) 
+        if ((queueMatrix[currentFloor][2] == 1 && queueMatrix[currentFloor][1] == 1) || currentFloor == 3) { // if arrived to requested floor. because we're the type of assholes that wont let passengers in if they request the opposite direction of the elevation direciton, we have them wait till request = direction
           openDoors(currentFloor);
           clearFloor(currentFloor);
-          if (checkQueueAbove(currentFloor)) {
+          if (checkQueueAbove(currentFloor)) {            
             *state = MOVING_UP;
           }
         }
-      //}
-      else {
+        else if (currentFloor == -1) {
+          *state = MOVING_UP;
+        }
+        else {
         printf("ERROR in MOVING_UP. Restarting\n");
-        *state = INIT;
-      }
-      break;
+        }
+      *state = INIT;
     }
+    break;
 
     case MOVING_DOWN: {
       elevio_motorDirection(DIRN_DOWN);
       printf("Moving down. Currently in floor %d \n", currentFloor);
       if (elevio_stopButton()) {
-        *state = BUTTONSTOP;
+        *state = STOP;
       }
-      if (currentFloor != -1) {
+      
         if ((queueMatrix[currentFloor][2] == 1 && queueMatrix[currentFloor][0] != 0) || currentFloor == 4) { // if arrived to requested floor
           openDoors(currentFloor);
           clearFloor(currentFloor);
@@ -115,7 +121,7 @@ void currentState(int currentFloor, elevatorState *state) {
             *state = MOVING_DOWN;
           }
         }
-      }
+      
       else {
         printf("ERROR in MOVING_DOWN. Restarting\n");
         *state = INIT;
@@ -123,12 +129,9 @@ void currentState(int currentFloor, elevatorState *state) {
       break;
     }
 
-    case BUTTONSTOP: {
+    case STOP: {
       stopButton(currentFloor);
-      if (!elevio_stopButton()) {
-        *state = INIT;
-      }
-      break;
+      *state = INIT;
     }
 
     default: {

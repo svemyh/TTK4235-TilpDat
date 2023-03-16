@@ -17,6 +17,7 @@
 
 
 void openDoors(int currentFloor) {
+    elevio_motorDirection(DIRN_STOP);
     elevio_doorOpenLamp(1); 
     printf("Door has opened at floor %d\n", elevio_floorSensor());
     if (elevio_obstruction()) {

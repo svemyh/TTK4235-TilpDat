@@ -10,7 +10,7 @@ typedef enum {
   IDLE = 1, 
   MOVING_UP = 2,
   MOVING_DOWN = 3,
-  BUTTONSTOP = 4,
+  STOP = 4,
 } elevatorState;
 
 void currentState(int currentFloor, elevatorState *state);
