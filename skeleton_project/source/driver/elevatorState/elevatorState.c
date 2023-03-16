@@ -39,21 +39,12 @@ void currentState(int currentFloor, elevatorState *state) {
 
       printf("* Button lamps off\n");
 
-      obstructionStop();
-      printf(" * No Obstruction\n");
-      printf("%d\n", currentFloor); //delete
-
-      while (1) { //defines init floor = 4
+      while (currentFloor != 0 || currentFloor == -1) { //defines init floor = 4
         currentFloor = elevio_floorSensor();
         printf("Floor: %d. Please wait \n", currentFloor);
-        while (currentFloor > 0 || currentFloor == -1) {
-          elevio_motorDirection(DIRN_DOWN);
-          if (currentFloor == 0) {
-            elevio_motorDirection(DIRN_STOP);
-            break;
-          }        
-        }      
+        elevio_motorDirection(DIRN_DOWN);        
       }
+      elevio_motorDirection(DIRN_STOP);
 
       printf("In defined floor: %d \n\n", currentFloor);
       printf("=======================================\n\n");
@@ -65,7 +56,7 @@ void currentState(int currentFloor, elevatorState *state) {
       if (currentFloor != -1) {
         elevio_doorOpenLamp(1);
         elevio_motorDirection(DIRN_STOP);
-        printf("Idle in floor %d", currentFloor);
+        printf("Idle in floor %d \n", currentFloor);
         if (elevio_stopButton()) {
           *state = BUTTONSTOP;
         }
@@ -89,7 +80,7 @@ void currentState(int currentFloor, elevatorState *state) {
 
     case MOVING_UP: {
     elevio_motorDirection(DIRN_UP);
-    printf("Moving up. Currently in floor %d", currentFloor);
+    printf("Moving up. Currently in floor %d \n", currentFloor);
       if (elevio_stopButton()) {
         *state = BUTTONSTOP;
       }
@@ -111,7 +102,7 @@ void currentState(int currentFloor, elevatorState *state) {
 
     case MOVING_DOWN: {
       elevio_motorDirection(DIRN_DOWN);
-      printf("Moving down. Currently in floor %d", currentFloor);
+      printf("Moving down. Currently in floor %d \n", currentFloor);
       if (elevio_stopButton()) {
         *state = BUTTONSTOP;
       }
