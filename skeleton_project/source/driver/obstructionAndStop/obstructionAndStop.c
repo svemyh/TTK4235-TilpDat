@@ -1,26 +1,36 @@
-#include "obstructionAndStop.h"
+/**
+ * @file 
+ * @brief The implementation file of obstructionStop library
+ */
 
-void obstructionStop() {
+#include "obstructionAndStop.h"
+#include "../openDoors/openDoors.h"
+#include "../elevio.h"
+
+void obstructionStop(void) {
             if(elevio_obstruction()){
                 elevio_stopLamp(1);
+                printf("OBSTRUCTION DETECTED!\n");
             }
+
             else {
                 elevio_stopLamp(0);
             }
         }
 
-void stopButton() {
-            if(elevio_stopButton()){
+void stopButton(int currentFloor) {
+        if(elevio_stopButton()){
                 elevio_motorDirection(DIRN_STOP);
                 elevio_stopLamp(1);
-                if(floor != -1){
-                    elevio_doorOpenLamp(1);
+                if(currentFloor != -1){
+                        elevio_doorOpenLamp(1);
                 }
-                while(elevio_stopButton) {};
-                nanosleep(&(struct timespecvoid){0, 20*1000*1000}, NULL);
-                elevator_state.stop_button_pressed = false;
-                break;
-            }
+                while(elevio_stopButton()) {
+                        printf("STOP BUTTON HELD!\n");
+                }
+                elevio_stopLamp(0);
+                sleep(3);
         }
+}
 
 
