@@ -27,7 +27,7 @@ void stopButton(int currentFloor) {
                 }
                 while(elevio_stopButton()) {
                         printf("STOP BUTTON HELD!\n");
-                };
+                }
                 elevio_stopLamp(0);
                 sleep(3);
         }

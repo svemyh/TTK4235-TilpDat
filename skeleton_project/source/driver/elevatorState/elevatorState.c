@@ -22,9 +22,10 @@ void currentState(int currentFloor, elevatorState *state) {
           elevio_buttonLamp(f, b, 0);
           int queueSum = 0;
           queueSum += queueMatrix[f][b];
-          if (queueSum != 0) {
+          if (queueSum != 0) { //failsafe
             printf("Queue not empty. Trying to initialize again\n");
             *state = INIT;
+            break;
           }
         }
       }
@@ -39,7 +40,7 @@ void currentState(int currentFloor, elevatorState *state) {
 
       printf("* Button lamps off\n");
 
-      while (currentFloor != 0 || currentFloor == -1) { //defines init floor = 4
+      while (currentFloor != 0) { //defines init floor = 0
         currentFloor = elevio_floorSensor();
         printf("Floor: %d. Please wait \n", currentFloor);
         elevio_motorDirection(DIRN_DOWN);        
@@ -60,7 +61,7 @@ void currentState(int currentFloor, elevatorState *state) {
         if (elevio_stopButton()) {
           *state = BUTTONSTOP;
         }
-  
+        
         if (checkQueueAbove(currentFloor)) {
           elevio_doorOpenLamp(0);
           *state = MOVING_UP;

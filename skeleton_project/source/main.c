@@ -68,7 +68,7 @@ int main(){
         //if(floor == N_FLOORS-1){
         //    elevio_motorDirection(DIRN_DOWN);
         //}
-        
+        makeRequest(); 
 
 
         for(int f = 0; f < N_FLOORS; f++){ //skrur floor lamps på og av avhengig av hvilken etasje heisen befinner seg i

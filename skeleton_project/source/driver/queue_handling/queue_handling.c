@@ -30,22 +30,24 @@ int checkQueueBelow(int floor) { // check if should be moving down
     return 0;
 }
 
-void makeFloorRequest(int floor) { //unused
-    if (elevio_callButton(floor, 2)) {
-        queueMatrix[floor][2] = 1;
-    }
-}
+void makeRequest() { // as in UP or DOWN buttons. unused
+  for (int f = 0; f < N_FLOORS-1; f++) {
+    for (int b = 0; b < N_BUTTONS-1; b++) { //yikes
+      if (elevio_callButton(f, 0)) { // callButton activated, tells the elevator to stop if dirn_up(not yet implemented)
+          queueMatrix[f][0] = 1;
+          queueMatrix[f][2] = 1;
+      }
 
-void makeButtonRequest(int floor) { // as in UP or DOWN buttons. unused
-    if (elevio_callButton(floor, 0)) { // callButton activated, tells the elevator to stop if dirn_up(not yet implemented)
-        queueMatrix[floor][0] = 1;
-        queueMatrix[floor][2] = 1;
-    }
+      if (elevio_callButton(f, 1)) { // tell the elevator to go down
+          queueMatrix[f][1] = 1;
+          queueMatrix[f][2] = 1;     // if up or down is requested outside, the elevator will stop when arrived to that floor
+      }
 
-    if (elevio_callButton(floor, 1)) { // tell the elevator to go down
-        queueMatrix[floor][1] = 1;
-        queueMatrix[floor][2] = 1;     // if up or down is requested outside, the elevator will stop when arrived to that floor
+      if (elevio_callButton(f, 2)) {
+          queueMatrix[f][2] = 1;
+      }
     }
+  }
 }
 
 int checkQueue(void) { //unused
