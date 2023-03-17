@@ -10,7 +10,7 @@ int queueMatrix[N_FLOORS][N_BUTTONS] = {
 
 int checkQueueAbove(int floor) { // check if should be moving up
     if (floor != -1) {
-        for (int f = 0; f < N_FLOORS-1; f++) {
+        for (int f = 0; f < floor; f++) {
             if (queueMatrix[f][2] > 0) {
                 return 1; 
             }
@@ -21,7 +21,7 @@ int checkQueueAbove(int floor) { // check if should be moving up
 
 int checkQueueBelow(int floor) { // check if should be moving down
     if (floor != -1 && floor != 0) {
-        for (int f = N_FLOORS-1; f > 0; f--) {
+        for (int f = floor; f > 0; f--) {
             if (queueMatrix[f][2] > 0) {
                 return 1; 
             }
@@ -30,23 +30,24 @@ int checkQueueBelow(int floor) { // check if should be moving down
     return 0;
 }
 
-void makeRequest() { // as in UP or DOWN buttons. unused
-  for (int f = 0; f < N_FLOORS-1; f++) {
-    for (int b = 0; b < N_BUTTONS-1; b++) { //yikes
+void makeRequest() { // as in UP or DOWN buttons
+  for (int f = 0; f < N_FLOORS; f++) {
       if (elevio_callButton(f, 0)) { // callButton activated, tells the elevator to stop if dirn_up(not yet implemented)
           queueMatrix[f][0] = 1;
           queueMatrix[f][2] = 1;
+          printf("Request from button UP has been made at floor %d\n", f);
       }
 
       if (elevio_callButton(f, 1)) { // tell the elevator to go down
           queueMatrix[f][1] = 1;
           queueMatrix[f][2] = 1;     // if up or down is requested outside, the elevator will stop when arrived to that floor
+          printf("Request from button DOWN has been made at floor %d\n", f);
       }
 
       if (elevio_callButton(f, 2)) {
           queueMatrix[f][2] = 1;
+          printf("Request from cab has been made to floor %d\n", f);
       }
-    }
   }
 }
 

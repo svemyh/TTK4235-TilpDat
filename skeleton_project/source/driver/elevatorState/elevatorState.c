@@ -23,7 +23,7 @@ void currentState(int currentFloor, elevatorState *state) {
           elevio_buttonLamp(f, b, 0);
           int queueSum = 0;
           queueSum += queueMatrix[f][b];
-          if (queueSum != 0) { //failsafe
+          if (queueSum != 0) { //failsafe    
             printf("Queue not empty. Trying to initialize again\n");
             *state = INIT;
             break;
@@ -76,6 +76,7 @@ void currentState(int currentFloor, elevatorState *state) {
   
         else if (checkQueueBelow(currentFloor)) {
           elevio_doorOpenLamp(0);
+          elevio_motorDirection(DIRN_DOWN);
           *state = MOVING_DOWN;
         }
       }
@@ -177,6 +178,7 @@ void currentState(int currentFloor, elevatorState *state) {
       elevio_stopLamp(0);
       printf("Restaring system\n");
       *state = INIT;
+      break;
     }
   }
 }
