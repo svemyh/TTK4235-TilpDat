@@ -58,9 +58,9 @@ void currentState(int currentFloor, elevatorState *state) {
 
     case IDLE: {
       obstructionStop();
+      makeRequest();
       if (currentFloor != -1) { // in floor
         elevio_doorOpenLamp(1);
-        makeRequest();
         elevio_motorDirection(DIRN_STOP);
         printf("Idle in floor %d \n", currentFloor);
 
