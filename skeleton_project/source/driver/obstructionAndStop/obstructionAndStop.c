@@ -8,29 +8,28 @@
 #include "../elevio.h"
 
 void obstructionStop(void) {
-            if(elevio_obstruction()){
+            while(elevio_obstruction()){
                 elevio_stopLamp(1);
                 printf("OBSTRUCTION DETECTED!\n");
             }
-
-            else {
-                elevio_stopLamp(0);
-            }
+            elevio_stopLamp(0);
+            nanosleep(&(struct timespec){0, 20*1000*1000}, NULL);
         }
 
 void stopButton(int currentFloor) {
-        if(elevio_stopButton()){
+         
                 elevio_motorDirection(DIRN_STOP);
                 elevio_stopLamp(1);
                 if(currentFloor != -1){
                         elevio_doorOpenLamp(1);
                 }
-                while(elevio_stopButton()) {
-                        printf("STOP BUTTON HELD!\n");
+                else {
+                        elevio_doorOpenLamp(0);
                 }
-                elevio_stopLamp(0);
-                sleep(3);
+        while (elevio_stopButton()) {
+                printf("STOP BUTTON HELD!\n");
         }
+        nanosleep(&(struct timespec){0, 20*1000*1000}, NULL);
 }
 
 

@@ -21,7 +21,7 @@ int checkQueueAbove(int floor) { // check if should be moving up
 
 int checkQueueBelow(int floor) { // check if should be moving down
     if (floor != -1 && floor != 0) {
-        for (int f = 0; f < N_FLOORS-1; f--) {
+        for (int f = N_FLOORS-1; f > 0; f--) {
             if (queueMatrix[f][2] > 0) {
                 return 1; 
             }
@@ -72,8 +72,8 @@ void clearQueue(void) {
             }
         }
 
-    for(int f = 0; f < N_FLOORS-1; f++){
-        for (int b = 0; b < N_BUTTONS-1; b++) {
+    for(int f = 0; f < N_FLOORS; f++){
+        for (int b = 0; b < N_BUTTONS; b++) {
             queueMatrix[f][b] = 0;
         }
     }
@@ -81,7 +81,7 @@ void clearQueue(void) {
 
 void clearFloor(int floor) {
     if (floor != -1) {
-        for (int b = 0; b < N_BUTTONS-1; b++) {
+        for (int b = 0; b < N_BUTTONS; b++) {
             queueMatrix[floor][b] = 0;
         }
     }

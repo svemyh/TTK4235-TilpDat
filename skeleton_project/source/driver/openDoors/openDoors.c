@@ -15,7 +15,6 @@
 #include "../con_load.h"
 #include "../obstructionAndStop/obstructionAndStop.h"
 
-
 void openDoors(int currentFloor) {
     elevio_motorDirection(DIRN_STOP);
     elevio_doorOpenLamp(1); 
@@ -27,8 +26,7 @@ void openDoors(int currentFloor) {
         stopButton(currentFloor);
     }
 
-    sleep(3); //venter 3 sekunder
-    elevio_doorOpenLamp(0); //skrur lampa av
+    nanosleep(&(struct timespec){0, 20*1000*1000}, NULL); //venter 3 sekunder
 
 }
 

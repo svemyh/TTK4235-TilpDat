@@ -25,8 +25,7 @@ extern int queueMatrix[N_FLOORS][N_BUTTONS];
 
 int checkQueueAbove(int floor);
 int checkQueueBelow(int floor);
-void makeFloorRequest(int floor);
-void makeButtonRequest(int floor);
+void makeRequest(void);
 int checkQueue(void);
 void clearQueue(void);
 void clearFloor(int floor);

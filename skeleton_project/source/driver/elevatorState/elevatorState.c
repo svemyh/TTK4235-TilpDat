@@ -8,6 +8,7 @@
 #include "../obstructionAndStop/obstructionAndStop.h"
 #include "../openDoors/openDoors.h"
 #include "../queue_handling/queue_handling.h"
+#include <time.h>
 
 void currentState(int currentFloor, elevatorState *state) {
   switch (*state) {
@@ -16,8 +17,8 @@ void currentState(int currentFloor, elevatorState *state) {
       printf("Initializing the elevator\n");
 
       clearQueue();
-      for (int f = 0; f < N_FLOORS-1; f++) {      //check if queue is cleared
-        for (int b = 0; b < N_BUTTONS-1; b++) {
+      for (int f = 0; f < N_FLOORS; f++) {      //check if queue is cleared
+        for (int b = 0; b < N_BUTTONS; b++) {
           queueMatrix[f][b] = 0;
           elevio_buttonLamp(f, b, 0);
           int queueSum = 0;
@@ -42,7 +43,9 @@ void currentState(int currentFloor, elevatorState *state) {
 
       while (currentFloor != 0) { //defines init floor = 0
         currentFloor = elevio_floorSensor();
-        printf("Floor: %d. Please wait \n", currentFloor);
+        if (currentFloor != -1) {
+          printf("Floor: %d. Please wait \n", currentFloor);
+        }
         elevio_motorDirection(DIRN_DOWN);        
       }
       elevio_motorDirection(DIRN_STOP);
@@ -54,19 +57,20 @@ void currentState(int currentFloor, elevatorState *state) {
     }
 
     case IDLE: {
-      if (currentFloor != -1) {
-        while (elevio_obstruction()) {
-          obstructionStop();
-        }
+      obstructionStop();
+      if (currentFloor != -1) { // in floor
         elevio_doorOpenLamp(1);
+        makeRequest();
         elevio_motorDirection(DIRN_STOP);
         printf("Idle in floor %d \n", currentFloor);
-        if (elevio_stopButton() || elevio_obstruction()) {
+
+        if (elevio_stopButton()) {
           *state = STOP;
         }
         
         if (checkQueueAbove(currentFloor)) {
           elevio_doorOpenLamp(0);
+          elevio_motorDirection(DIRN_UP);
           *state = MOVING_UP;
         }
   
@@ -75,69 +79,105 @@ void currentState(int currentFloor, elevatorState *state) {
           *state = MOVING_DOWN;
         }
       }
+
       else {
         printf("ERROR in IDLE. Restarting\n");
         *state = INIT;
       }
       break;
     }
-
+    
     case MOVING_UP: {
+        obstructionStop();
+        elevio_doorOpenLamp(0);
         elevio_motorDirection(DIRN_UP);
-        printf("Moving up. Currently in floor %d \n", currentFloor);
+        makeRequest();
+
         if (elevio_stopButton()) {
-            *state = STOP;
-            break;
+          *state = STOP;
+        }
+
+        if (currentFloor == -1) {
+          printf("Moving up between floors\n");
+          *state = MOVING_UP;
+          break;
         }
         //if (currentFloor != -1) 
-        if ((queueMatrix[currentFloor][2] == 1 && queueMatrix[currentFloor][1] == 1) || currentFloor == 3) { // if arrived to requested floor. because we're the type of assholes that wont let passengers in if they request the opposite direction of the elevation direciton, we have them wait till request = direction
+        if ((queueMatrix[currentFloor][2] == 1 && queueMatrix[currentFloor][1] == 0) && checkQueueAbove(currentFloor) != 0) { // if arrived to requested floor. because we're the type of assholes that wont let passengers in if they request the opposite direction of the elevation direciton, we have them wait till request = direction
           openDoors(currentFloor);
           clearFloor(currentFloor);
+          nanosleep(&(struct timespec){0, 20*1000*1000}, NULL);
           if (checkQueueAbove(currentFloor)) {            
             *state = MOVING_UP;
+            break;
           }
         }
-        else if (currentFloor == -1) {
-          *state = MOVING_UP;
+
+        else if (queueMatrix[currentFloor][1] == 1 && checkQueueAbove(currentFloor == 0)) {
+          clearFloor(currentFloor);
+          *state = IDLE;
         }
-        else {
-        printf("ERROR in MOVING_UP. Restarting\n");
+
+        else if (checkQueueAbove(currentFloor) == 0 && checkQueueBelow(currentFloor) == 0) {
+          openDoors(currentFloor);
+          clearFloor(currentFloor);
+          printf("Entering idle\n");
+          *state = IDLE;
         }
-      *state = INIT;
     }
     break;
 
     case MOVING_DOWN: {
-      elevio_motorDirection(DIRN_DOWN);
-      printf("Moving down. Currently in floor %d \n", currentFloor);
-      if (elevio_stopButton()) {
-        *state = STOP;
-      }
-      
-        if ((queueMatrix[currentFloor][2] == 1 && queueMatrix[currentFloor][0] != 0) || currentFloor == 4) { // if arrived to requested floor
+        obstructionStop();
+        elevio_doorOpenLamp(0);
+        elevio_motorDirection(DIRN_DOWN);
+        makeRequest();
+
+        if (elevio_stopButton()) {
+          *state = STOP;
+        }
+
+        if (currentFloor == -1) {
+          printf("Moving down between floors\n");
+          *state = MOVING_DOWN;
+          break;
+        }
+        //if (currentFloor != -1) 
+        if ((queueMatrix[currentFloor][2] == 1 && queueMatrix[currentFloor][0] == 0) && checkQueueBelow(currentFloor) != 0) { // if arrived to requested floor. because we're the type of assholes that wont let passengers in if they request the opposite direction of the elevation direciton, we have them wait till request = direction
           openDoors(currentFloor);
           clearFloor(currentFloor);
-          if (checkQueueAbove(currentFloor)) {
+          nanosleep(&(struct timespec){0, 20*1000*1000}, NULL);
+          if (checkQueueAbove(currentFloor)) {            
             *state = MOVING_DOWN;
+            break;
           }
         }
-      
-      else {
-        printf("ERROR in MOVING_DOWN. Restarting\n");
-        *state = INIT;
-      }
-      break;
+
+        else if (queueMatrix[currentFloor][0] == 1 && checkQueueBelow(currentFloor == 0)) {
+          clearFloor(currentFloor);
+          *state = IDLE;
+        }
+
+        else if (checkQueueAbove(currentFloor) == 0 && checkQueueBelow(currentFloor) == 0) {
+          openDoors(currentFloor);
+          clearFloor(currentFloor);
+          printf("Entering idle\n");
+          *state = IDLE;
+        }
     }
 
+    break;
     case STOP: {
       stopButton(currentFloor);
-      *state = INIT;
-    }
+      while (elevio_stopButton()) {
+        stopButton(currentFloor);
+      }
 
-    default: {
-      printf("INVALID\n");
+      nanosleep(&(struct timespec){0, 20*1000*1000}, NULL);
+      elevio_stopLamp(0);
+      printf("Restaring system\n");
       *state = INIT;
-      break;
     }
   }
 }
+
